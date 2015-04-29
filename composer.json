@@ -1,0 +1,29 @@
+{
+  "name": "nfreear/composer-suggest",
+  "description": "Composer 'plugin'. Can we find a simple way of installing Composer suggestions?",
+  "keywords": [ "LACE", "LearningAnalytics", "OpenUniversity", "IET-OU" ],
+  "type": "project",
+  "time": "2015-04-29",
+  "license": "proprietary",
+  "minimum-stability": "dev",
+  "authors": [
+    { "name": "Nick Freear (@nfreear)" }
+  ],
+  "support": {
+    "source": "http://github.com/nfreear/composer-suggest"
+  },
+  "require": {
+    "php": ">=5.3.3"
+  },
+
+  "suggest": {
+    "a/b": "1.0; This package is [LACE] only",
+    "c/d": "2.*. This package is for JuxtaLearn and LACE.",
+    "e/f": "3.*, This is just for JXL."
+  },
+
+  "scripts": {
+    "X-install-suggest": "nfreear\\Composer\\Composer_Suggest::install",
+    "install-suggest": "php -f vendor/nfreear/composer-suggest/Composer_Suggest.php"
+  }
+}
