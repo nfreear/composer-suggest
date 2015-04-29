@@ -9,6 +9,11 @@
   "authors": [
     { "name": "Nick Freear (@nfreear)" }
   ],
+  "autoload": {
+    "psr-4": {
+      "Nfreear\\Composer\\": "src/"
+    }
+  },
   "support": {
     "source": "http://github.com/nfreear/composer-suggest"
   },

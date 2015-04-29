@@ -7,7 +7,7 @@
  * @author Nick Freear, 29 April 2015.
  */
 
-namespace nfreear\Composer;
+namespace Nfreear\Composer;
 
 use Composer\Composer;
 
