@@ -2,7 +2,7 @@
 /**
  * Composer 'plugin'. Can we find a simple way of installing Composer suggestions?
  *
- * USAGE:  composer run-script install-suggest "J.*X.*L"
+ * USAGE:  composer run-script install-suggest "Ju?X(ta)?L"
  *
  * @author Nick Freear, 29 April 2015.
  */
@@ -14,54 +14,72 @@ use Composer\Composer;
 
 class Composer_Suggest {
 
+  const ENV = 'NF_COMPOSER_SUGGEST';
+
   const COMPOSER = 'php ../composer.phar ';
 
   const RE_VERSION = '@^(?<version>[^\s]+) @';
-  
+
   const RE_VEND_PKG = '@(?<vendor>[a-z\d\-]+)\/(?<package>[\w\-]+)@';
 
 
+  /** Main install method.
+  */
   public static function install() {
 
     self::out( __METHOD__ );
 
-    $regex = self::get_argv_pattern();
-    $composer = self::get_composer();
+    $regex = self::get_argv_env_pattern();
+    $composer = self::get_composer_data();
 
     self::out( 'Pattern (perl-compatible reg exp):  ' . $regex );
 
     $suggest_r = self::match_suggestions( $composer->suggest, $regex );
 
-    $command = self::COMPOSER . 'require ' . implode( ' ', $suggest_r );
+    if ($suggest_r) {
+      $command = self::COMPOSER . 'require ' . implode( ' ', $suggest_r );
 
-    self::out( 'Command:' );
-    self::out( $command . PHP_EOL );
+      self::out( 'Command:' );
+      self::out( $command . PHP_EOL );
 
-    system( $command );
-
+      system( $command );
+    } else {
+      self::out( 'No matches, no composer-require triggered.' );
+    }
     exit( 0 );
   }
 
 
   // ======================================================
 
-  protected function get_argv_pattern() {
+  /** Get the `pattern` from command-line or environment.
+  * @return string
+  */
+  protected function get_argv_env_pattern() {
     global $argv, $argc;
 
-    if ($argc < 2) {
-      self::fatal( 'Insufficient arguments.' );
+    $pattern = ($argc > 1) ? $argv[ $argc - 1 ] : getenv( self::ENV );
+
+    if (! $pattern) {
       var_dump( $argv );
+      self::fatal( 'Insufficient arguments/ no environment variable set; '. self::ENV );
     }
-    $regex = '/' . $argv[ $argc - 1 ] . '/i';
+    $regex = '/' . $pattern . '/i';
 
     return $regex;
   }
 
-  protected function get_composer() {
+  /** Get object representation of `composer.json`
+  * @return object
+  */
+  protected function get_composer_data() {
     $json = file_get_contents( './composer.json' );
     return (object) json_decode( $json );
   }
 
+  /** Loop through suggestions, finding matches
+  * @return array Array of matches.
+  */
   protected function match_suggestions( $suggestions, $regex ) {
     $suggest_r = array();
 
@@ -78,8 +96,11 @@ class Composer_Suggest {
         self::out( "No match (or error):  '$package' => '$info'" );
       }
     }
-    return $suggest_r;
+    return count( $suggest_r ) > 0 ? $suggest_r : null;
   }
+
+  /** Utilities.
+  */
 
   protected static function out( $msg ) {
     // Verbose option?
@@ -87,7 +108,7 @@ class Composer_Suggest {
   }
 
   protected static function fatal( $msg ) {
-    write( STDERR, 'ERROR. ' . $msg . PHP_EOL );
+    fwrite( STDERR, 'ERROR. ' . $msg . PHP_EOL );
     exit( 1 );
   }
 }
