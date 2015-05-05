@@ -17,7 +17,7 @@ Example `composer.json`:
 
     "scripts": {
       "install-lace":
-        "php -f vendor/nfreear/composer-suggest/src/Composer_Suggest.php -- LACE"
+        "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE"
     }
 }
 ```

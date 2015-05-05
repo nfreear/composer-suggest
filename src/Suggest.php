@@ -12,7 +12,7 @@ namespace Nfreear\Composer;
 use Composer\Composer;
 
 
-class Composer_Suggest {
+class Suggest {
 
   const ENV = 'NF_COMPOSER_SUGGEST';
 
@@ -88,7 +88,7 @@ class Composer_Suggest {
           && preg_match( self::RE_VEND_PKG, $package )
           && preg_match( self::RE_VERSION, $info, $matches )) {
 
-        $version = rtrim( $matches[ 'version' ], ';,. ' );
+        $version = rtrim( $matches[ 'version' ], ';, ' );
         $suggest_r[] = $package . ':' . $version;
         self::out( "Match:  '$package' => '$info'" );
       }
@@ -115,7 +115,7 @@ class Composer_Suggest {
 
 
 if (FALSE !== strpos( __FILE__, $argv[ 0 ])) {
-  Composer_Suggest::install();
+  Suggest::install();
 }
 
 #End.

@@ -1,8 +1,8 @@
 {
   "name": "nfreear/composer-suggest",
   "description": "Composer script. Can we find a simple way of installing Composer suggestions?",
-  "keywords": [ "LACE", "LearningAnalytics", "OpenUniversity", "IET-OU" ],
-  "type": "project",
+  "keywords": [ "Composer", "LACE", "OpenUniversity", "IET-OU" ],
+  "type": "composer-plugin",
   "time": "2015-04-29",
   "license": "proprietary",
   "minimum-stability": "dev",
@@ -15,7 +15,7 @@
     }
   },
   "extra": {
-    "class": "Nfreear\\Composer\\Composer_Suggest"
+    "class": "Nfreear\\Composer\\Suggest"
   },
   "support": {
     "source": "http://github.com/nfreear/composer-suggest"
@@ -39,10 +39,10 @@
   },
 
   "scripts": {
-    "X-install-suggest": "nfreear\\Composer\\Composer_Suggest::install",
-    "install-lace": "php -f vendor/nfreear/composer-suggest/src/Composer_Suggest.php -- LACE",
+    "X-install-suggest": "nfreear\\Composer\\Suggest::install",
+    "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
 
-    "demo": "php -f src/Composer_Suggest.php",
+    "demo": "php -f src/Suggest.php",
 
     "test": [
       "../composer.phar validate --no-interaction",
