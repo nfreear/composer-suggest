@@ -22,13 +22,12 @@ class Suggest {
 
   const RE_VEND_PKG = '@(?<vendor>[a-z\d\-]+)\/(?<package>[\w\-]+)@';
 
-
   protected static $event;
 
 
   /** Main install method.
   */
-  public static function install( CommandEvent $event ) {
+  public static function install( CommandEvent $event = null ) {
     self::$event = $event;
 
     echo __METHOD__ . PHP_EOL;
@@ -49,7 +48,7 @@ class Suggest {
 
   /** Dry run method.
   */
-  public static function dry_run( CommandEvent $event ) {
+  public static function dry_run( CommandEvent $event = null ) {
     self::$event = $event;
 
     echo __METHOD__ . PHP_EOL;
@@ -91,15 +90,14 @@ class Suggest {
   * @return string
   */
   protected static function get_argv_env_pattern() {
-    $arguments = self::$event->getArguments();
+    global $argv, $argc;
+
+    $arguments = self::$event ? self::$event->getArguments() : null;
 
     if ($arguments) {
       $pattern = $arguments[ count($arguments) - 1 ];
     }
-    else {
-      $argv = filter_input( INPUT_SERVER, 'argv' );
-      $argc = filter_input( INPUT_SERVER, 'argc' );
-
+    elseif (isset( $argv )) {
       $pattern = ($argc > 1) ? $argv[ $argc - 1 ] : getenv( self::ENV );
     }
 
@@ -126,6 +124,15 @@ class Suggest {
   protected static function match_suggestions( $suggestions, $regex ) {
     $suggest_r = array();
 
+    // http://stackoverflow.com/questions/3535765/capturing-regex-comp--errors
+    try {
+      set_error_handler( 'self::regexErrorHandler' );
+      preg_match( $regex, 'dummy' );
+    } catch (\Exception $ex) {
+      self::fatal( 'Pattern error. '. $ex->getMessage() );
+    }
+    restore_error_handler();
+
     foreach ( $suggestions as $package => $info ) {
       if (preg_match( $regex, $info )
           && preg_match( self::RE_VEND_PKG, $package )
@@ -142,13 +149,21 @@ class Suggest {
     return count( $suggest_r ) > 0 ? $suggest_r : null;
   }
 
+  protected static function regexErrorHandler($errno, $str, $file, $line, $context) {
+    throw new \ErrorException( $str, 0, $errno, $file, $line );
+  }
+
+
   /** Utilities.
   */
 
   protected static function out( $msg ) {
-	if (self::$event->getIO()->isVerbose()) {
-	  fwrite( STDERR, ' > ' . $msg . PHP_EOL );
-	}
+    if (!self::$event) {
+      fwrite( STDERR, ' > ' . $msg . PHP_EOL );
+    }
+    elseif (self::$event->getIO()->isVerbose()) {
+      fwrite( STDERR, ' > ' . $msg . PHP_EOL );
+    }
   }
 
   protected static function fatal( $msg ) {
@@ -162,8 +177,9 @@ class Suggest {
 
 
 call_user_func(function () {
-  $argv = filter_input( INPUT_SERVER, 'argv' );
-  if ($argv && FALSE !== strpos( __FILE__, $argv[ 0 ])) {
+  global $argv;
+
+  if (isset( $argv ) && FALSE !== strpos( __FILE__, $argv[ 0 ])) {
     Suggest::install();
   }
 });
