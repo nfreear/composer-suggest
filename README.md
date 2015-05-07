@@ -26,13 +26,13 @@ Example `composer.json`:
 Example usage:
 
 ```bash
->  composer -v run-script install-lace
->  composer -v dry-run-suggest -- "Ju?X(ta)?L"   # Install packages suggested for 'Juxtalearn' & 'JXL'.
->  composer -v dry-run-suggest -- "EXP\w*-A"     # Experiment-A only.
+>  composer -v install-lace
+>  composer -v dry-run-suggest "Ju?X(ta)?L"    # Packages suggested for 'Juxtalearn' & 'JXL'.
+>  composer -v dry-run-suggest "Experiment-A"
 ```
 
 
-See [composer-suggest][] in use in the [LACE/ OER Research Hub code][]-base.
+See [composer-suggest][] in use in the [LACE/ OER Research Hub code][ex]-base.
 
 Developed for the [LACE Evidence Hub][], part of the [Learning Analytics Community Exchange][] project.
 
@@ -48,4 +48,4 @@ License: [MIT][]
 [Institute of Educational Technology]: http://iet.open.ac.uk/
 [Learning Analytics Community Exchange]: http://www.laceproject.eu "LACE project"
 [LACE Evidence Hub]: http://evidence.laceproject.eu/
-[LACE/ OER Research Hub code]: https://github.com/IET-OU/oer-evidence-hub-org/tree/CR40-composer
+[ex]: https://github.com/IET-OU/oer-evidence-hub-org/blob/CR40-composer/composer-TEMPLATE.json#L34 "suggest: {..} in composer.json"

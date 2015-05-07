@@ -1,9 +1,8 @@
 {
   "name": "nfreear/composer-suggest",
-  "description": "Composer script to provide a simple way to install suggestions, based on keyword patterns.",
+  "description": "Composer script to provide a simple way to install suggestions, based on keyword patterns. \n`composer install-suggest \"LACE\"` \nDeveloped via LACE.",
   "keywords": [ "Composer", "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
   "type": "composer-plugin",
-  "time": "2015-04-29",
   "license": "MIT",
   "minimum-stability": "dev",
   "authors": [
@@ -39,10 +38,10 @@
 
   "scripts": {
     "install-suggest": "Nfreear\\Composer\\Suggest::install",
-    "dry-suggest": "Nfreear\\Composer\\Suggest::dry_run",
+    "dry-run-suggest": "Nfreear\\Composer\\Suggest::dry_run",
     "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
 
-    "demo": "php -f src/Suggest.php",
+    "demo": "php -f src/Suggest.php -- ABC",
 
     "test": [
       "#../composer.phar validate --no-interaction",
