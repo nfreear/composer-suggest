@@ -1,12 +1,14 @@
 {
   "name": "nfreear/composer-suggest",
-  "description": "Composer script to provide a simple way to install suggestions, based on keyword patterns. \n`composer install-suggest \"LACE\"` \nDeveloped via LACE.",
+  "description": "Composer script to install suggestions simply, based on keyword patterns. $ composer install-suggest ABC $ \n(Developed via LACE project)",
   "keywords": [ "Composer", "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
   "type": "composer-plugin",
   "license": "MIT",
   "minimum-stability": "dev",
   "authors": [
-    { "name": "Nick Freear (@nfreear)" }
+    {
+      "name": "Nick Freear (@nfreear)"
+    }
   ],
   "autoload": {
     "psr-4": {

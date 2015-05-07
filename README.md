@@ -1,6 +1,6 @@
 # composer-suggest
 
-A [Composer script][] to provide a simple way to install [suggestions][], based on keyword patterns.
+A [Composer script][] to install [suggestions][] simply, based on keyword patterns.
 
 
 Example `composer.json`:
@@ -23,10 +23,15 @@ Example `composer.json`:
 }
 ```
 
-Example usage:
+Basic usage:
 
-```bash
+```sh
 >  composer -v install-lace
+```
+
+Advanced usage:
+
+```sh
 >  composer -v dry-run-suggest "Ju?X(ta)?L"    # Packages suggested for 'Juxtalearn' & 'JXL'.
 >  composer -v dry-run-suggest "Experiment-A"
 ```
@@ -36,10 +41,11 @@ See [composer-suggest][] in use in the [LACE/ OER Research Hub code][ex]-base.
 
 Developed for the [LACE Evidence Hub][], part of the [Learning Analytics Community Exchange][] project.
 
+
 ---
 License: [MIT][]
 
-2015 The Open University. ([Institute of Educational Technology][])
+© 2015 The Open University. ([Institute of Educational Technology][])
 
 [MIT]: http://nfreear.mit-license.org/ "MIT License"
 [composer-suggest]: https://github.com/nfreear/composer-suggest

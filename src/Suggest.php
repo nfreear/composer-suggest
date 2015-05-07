@@ -4,7 +4,9 @@
  *
  * USAGE:  composer run-script install-suggest "Ju?X(ta)?L"
  *
- * @author Nick Freear, 29 April 2015.
+ * @author    Nick Freear, 29 April 2015.
+ * @copyright 2015 The Open University.
+ * @license   MIT
  */
 
 namespace Nfreear\Composer;
