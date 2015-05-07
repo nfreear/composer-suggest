@@ -33,9 +33,10 @@
   },
 
   "suggest": {
-    "a/b": "1.0; This package is [LACE] only",
+    "a/b": "1.0; This package is for [LACE] only",
     "c/d": "2.*. This package is for JuxtaLearn and LACE.",
-    "e/f": "3.*, This is just for JXL."
+    "e/f": "3.*, This is just for JXL.",
+    "g/h": "master; Experiment-A"
   },
 
   "scripts": {
