@@ -32,20 +32,21 @@ class Suggest {
   public static function install( CommandEvent $event = null ) {
     self::$event = $event;
 
-    echo __METHOD__ . PHP_EOL;
+    self::out( __METHOD__ );
 
     $command = self::compose_suggestions_command();
 
     if ($command) {
-      self::out( 'Command:' );
-      self::out( $command . PHP_EOL );
+      self::debug( 'Command:' );
+      self::debug( $command . PHP_EOL );
 
-      system( $command );
+      system( $command, $result );
     } else {
       self::out( 'No matches, no composer-require triggered.' );
+      $result = 0;
     }
 
-    exit( 0 );
+    exit( $result );
   }
 
   /** Dry run method.
@@ -53,13 +54,13 @@ class Suggest {
   public static function dry_run( CommandEvent $event = null ) {
     self::$event = $event;
 
-    echo __METHOD__ . PHP_EOL;
+    self::out( __METHOD__ );
 
     $command = self::compose_suggestions_command();
 
     if ($command) {
-      self::out( 'Command (dry-run):' );
-      self::out( $command . PHP_EOL );
+      self::debug( 'Command (dry-run):' );
+      self::debug( $command . PHP_EOL );
     } else {
       self::out( 'No matches, no composer-require triggered (dry-run).' );
     }
@@ -78,7 +79,7 @@ class Suggest {
     $regex = self::get_argv_env_pattern();
     $composer = self::get_composer_data();
 
-    self::out( 'Pattern (perl-compatible reg exp):  ' . $regex );
+    self::debug( 'Pattern (perl-compatible reg exp):  ' . $regex );
 
     $suggest_r = self::match_suggestions( $composer->suggest, $regex );
 
@@ -131,7 +132,7 @@ class Suggest {
       set_error_handler( 'self::regexErrorHandler' );
       preg_match( $regex, 'dummy' );
     } catch (\Exception $ex) {
-      self::fatal( 'Pattern error. '. $ex->getMessage() );
+      self::fatal( 'Error in pattern. '. $ex->getMessage() );
     }
     restore_error_handler();
 
@@ -142,10 +143,10 @@ class Suggest {
 
         $version = rtrim( $matches[ 'version' ], ';, ' );
         $suggest_r[] = $package . ':' . $version;
-        self::out( "Match:  '$package' => '$info'" );
+        self::debug( "Match:  '$package' => '$info'" );
       }
       else {
-        self::out( "No match (or error):  '$package' => '$info'" );
+        self::debug( "No match (or error):  '$package' => '$info'" );
       }
     }
     return count( $suggest_r ) > 0 ? $suggest_r : null;
@@ -159,17 +160,29 @@ class Suggest {
   /** Utilities.
   */
 
-  protected static function out( $msg ) {
-    if (!self::$event) {
-      fwrite( STDERR, ' > ' . $msg . PHP_EOL );
-    }
-    elseif (self::$event->getIO()->isVerbose()) {
-      fwrite( STDERR, ' > ' . $msg . PHP_EOL );
+  protected static function out( $message ) {
+    if (self::$event) {
+      self::$event->getIO()->write("  <info>[suggest]</info> $message");
+    } else {
+      fwrite( STDERR, ' > ' . $message . PHP_EOL );
     }
   }
 
-  protected static function fatal( $msg ) {
-    fwrite( STDERR, 'ERROR. ' . $msg . PHP_EOL );
+  protected static function debug( $message ) {
+    if (!self::$event) {
+      fwrite( STDERR, ' > ' . $message . PHP_EOL );
+    }
+    elseif (self::$event->getIO()->isVerbose()) {
+      self::$event->getIO()->write("  <info>[suggest]</info> $message");
+    }
+  }
+
+  protected static function fatal( $message ) {
+    if (self::$event) {
+      self::$event->getIO()->writeError("  <error>[suggest]</error> $message");
+    } else {
+      fwrite( STDERR, 'ERROR. ' . $message . PHP_EOL );
+    }
     exit( 1 );
   }
 }
