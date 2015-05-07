@@ -1,10 +1,10 @@
 {
   "name": "nfreear/composer-suggest",
-  "description": "Composer script. Can we find a simple way of installing Composer suggestions?",
-  "keywords": [ "Composer", "LACE", "OpenUniversity", "IET-OU" ],
+  "description": "Composer script to provide a simple way to install suggestions, based on keyword patterns.",
+  "keywords": [ "Composer", "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
   "type": "composer-plugin",
   "time": "2015-04-29",
-  "license": "proprietary",
+  "license": "MIT",
   "minimum-stability": "dev",
   "authors": [
     { "name": "Nick Freear (@nfreear)" }
@@ -27,9 +27,7 @@
   "require-dev": {
     "composer/composer": "1.0.*@dev",
     "phpunit/phpunit": "~4.0",
-    "jakub-onderka/php-parallel-lint": "~0.8",
-    "squizlabs/php_codesniffer": "~2.1.0",
-    "phpspec/prophecy-phpunit": "~1.0"
+    "jakub-onderka/php-parallel-lint": "~0.8"
   },
 
   "suggest": {
@@ -47,7 +45,7 @@
     "demo": "php -f src/Suggest.php",
 
     "test": [
-      "../composer.phar validate --no-interaction",
+      "#../composer.phar validate --no-interaction",
       "parallel-lint src",
       "# phpcs --encoding=utf-8 --standard=PSR2 --report-checkstyle=reports/checkstyle-phpcs.xml --report-full --extensions=php src/*"
     ]

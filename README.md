@@ -1,8 +1,6 @@
 # composer-suggest
 
-A [Composer script][].
-
-Can we find a simple way of installing Composer suggestions?
+A [Composer script][] to provide a simple way to install [suggestions][], based on keyword patterns.
 
 
 Example `composer.json`:
@@ -33,5 +31,21 @@ Example usage:
 >  composer -v dry-run-suggest -- "EXP\w*-A"     # Experiment-A only.
 ```
 
-[Composer script]: https://getcomposer.org/doc/articles/scripts.md
 
+See [composer-suggest][] in use in the [LACE/ OER Research Hub code][]-base.
+
+Developed for the [LACE Evidence Hub][], part of the [Learning Analytics Community Exchange][] project.
+
+---
+License: [MIT][]
+
+2015 The Open University. ([Institute of Educational Technology][])
+
+[MIT]: http://nfreear.mit-license.org/ "MIT License"
+[composer-suggest]: https://github.com/nfreear/composer-suggest
+[Composer script]: https://getcomposer.org/doc/articles/scripts.md
+[suggestions]: https://getcomposer.org/doc/04-schema.md#suggest
+[Institute of Educational Technology]: http://iet.open.ac.uk/
+[Learning Analytics Community Exchange]: http://www.laceproject.eu "LACE project"
+[LACE Evidence Hub]: http://evidence.laceproject.eu/
+[LACE/ OER Research Hub code]: https://github.com/IET-OU/oer-evidence-hub-org/tree/CR40-composer
