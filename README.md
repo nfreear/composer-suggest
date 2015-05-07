@@ -16,6 +16,7 @@ Example `composer.json`:
     },
 
     "scripts": {
+      "dry-suggest": "\\Nfreear\\Composer\\Suggest::dry_run",
       "install-lace":
         "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE"
     }
@@ -25,6 +26,7 @@ Example `composer.json`:
 Example usage:
 
     composer run-script install-lace
+    composer dry-suggest -- LACE
 
 
 [Composer script]: https://getcomposer.org/doc/articles/scripts.md

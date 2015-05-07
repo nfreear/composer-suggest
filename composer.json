@@ -39,7 +39,8 @@
   },
 
   "scripts": {
-    "X-install-suggest": "nfreear\\Composer\\Suggest::install",
+    "install-suggest": "Nfreear\\Composer\\Suggest::install",
+    "dry-suggest": "Nfreear\\Composer\\Suggest::dry_run",
     "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
 
     "demo": "php -f src/Suggest.php",
