@@ -15,7 +15,9 @@ use Composer\Plugin\PluginInterface;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Composer;
 use Composer\IO\IOInterface;
+use Composer\Script\Event;
 use Composer\Script\CommandEvent;
+use Composer\Script\ScriptEvents;
 
 class Suggest implements PluginInterface, EventSubscriberInterface
 {
@@ -28,8 +30,8 @@ class Suggest implements PluginInterface, EventSubscriberInterface
 
     const RE_VEND_PKG = '@(?<vendor>[a-z\d\-]+)\/(?<package>[\w\-]+)@';
 
-    protected $composer;
-    protected $io;
+    protected static $composer;
+    protected static $io;
     protected static $event;
 
     /**
@@ -37,10 +39,10 @@ class Suggest implements PluginInterface, EventSubscriberInterface
      */
     public function activate(Composer $composer, IOInterface $io)
     {
-        echo __METHOD__ . PHP_EOL;
+        self::$composer = $composer;
+        self::$io = $io;
 
-        $this->composer = $composer;
-        $this->io = $io;
+        self::debug(__METHOD__);
     }
 
     /**
@@ -48,9 +50,20 @@ class Suggest implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        echo __METHOD__ . PHP_EOL;
+        self::debug(__METHOD__);
 
-        return array();
+        return array(
+            ScriptEvents::POST_INSTALL_CMD => 'onInstallOrUpdate',
+            ScriptEvents::POST_UPDATE_CMD  => 'onInstallOrUpdate',
+        );
+    }
+
+
+    public function onInstallOrUpdate(Event $event)
+    {
+        self::debug(__METHOD__);
+
+        var_dump( $event->getArguments() );
     }
 
     /** Main install method.
@@ -106,11 +119,16 @@ class Suggest implements PluginInterface, EventSubscriberInterface
     {
 
         $regex = self::getArgvEnvPattern();
-        $composer = self::getComposerData();
+        $composer_data = self::getComposerData();
 
-        self::debug('Pattern (perl-compatible reg exp):    ' . $regex);
+        self::debug('Pattern (perl-compatible reg exp):  ' . $regex);
 
-        $suggest_r = self::matchSuggestions($composer->suggest, $regex);
+        if (!isset($composer_data->suggest)) {
+            self::out("No 'suggest' section found in './composer.json'");
+            exit(0);
+        }
+
+        $suggest_r = self::matchSuggestions($composer_data->suggest, $regex);
 
         if ($suggest_r) {
             $command = self::COMPOSER . 'require ' . implode(' ', $suggest_r);
@@ -174,9 +192,9 @@ class Suggest implements PluginInterface, EventSubscriberInterface
                 $version = rtrim($matches[ 'version' ], ';, ');
 
                 $suggest_r[] = $package . ':' . $version;
-                self::debug("Match:    '$package' => '$info'");
+                self::debug("Match:  '$package' => '$info'");
             } else {
-                self::debug("No match (or error):    '$package' => '$info'");
+                self::debug("No match (or error):  '$package' => '$info'");
             }
         }
         return count($suggest_r) > 0 ? $suggest_r : null;
@@ -187,14 +205,21 @@ class Suggest implements PluginInterface, EventSubscriberInterface
         throw new \ErrorException($str, 0, $errno, $file, $line);
     }
 
+    protected static function getIO() {
+        if (self::$io) {
+            return self::$io;
+        }
+        return self::$event ? self::$event->getIO() : null;
+    }
 
     /** Utilities.
     */
 
     protected static function out($message)
     {
-        if (self::$event) {
-            self::$event->getIO()->write("    <info>[suggest]</info> $message");
+        $io = self::getIO();
+        if ($io) {
+            $io->write("  <warning>[suggest]</warning> $message");
         } else {
             fwrite(STDERR, ' > ' . $message . PHP_EOL);
         }
@@ -202,17 +227,19 @@ class Suggest implements PluginInterface, EventSubscriberInterface
 
     protected static function debug($message)
     {
-        if (!self::$event) {
+        $io = self::getIO();
+        if (!$io) {
             fwrite(STDERR, ' > ' . $message . PHP_EOL);
-        } elseif (self::$event->getIO()->isVerbose()) {
-            self::$event->getIO()->write("    <info>[suggest]</info> $message");
+        } elseif ($io->isVerbose()) {
+            $io->write("  <info>[suggest]</info> $message");
         }
     }
 
     protected static function fatal($message)
     {
-        if (self::$event) {
-            self::$event->getIO()->writeError("    <error>[suggest]</error> $message");
+        $io = self::getIO();
+        if ($io) {
+            $io->writeError("  <error>[suggest]</error> $message");
         } else {
             fwrite(STDERR, 'ERROR. ' . $message . PHP_EOL);
         }
