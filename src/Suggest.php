@@ -11,9 +11,13 @@
 
 namespace Nfreear\Composer;
 
+use Composer\Plugin\PluginInterface;
+use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\Composer;
+use Composer\IO\IOInterface;
 use Composer\Script\CommandEvent;
 
-class Suggest
+class Suggest implements PluginInterface, EventSubscriberInterface
 {
 
     const ENV = 'NF_COMPOSER_SUGGEST';
@@ -24,8 +28,30 @@ class Suggest
 
     const RE_VEND_PKG = '@(?<vendor>[a-z\d\-]+)\/(?<package>[\w\-]+)@';
 
+    protected $composer;
+    protected $io;
     protected static $event;
 
+    /**
+     * {@inheritdoc}
+     */
+    public function activate(Composer $composer, IOInterface $io)
+    {
+        echo __METHOD__ . PHP_EOL;
+
+        $this->composer = $composer;
+        $this->io = $io;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        echo __METHOD__ . PHP_EOL;
+
+        return array();
+    }
 
     /** Main install method.
     */
