@@ -28,6 +28,7 @@
   "require-dev": {
     "composer/composer": "1.0.*@dev",
     "phpunit/phpunit": "~4.0",
+    "squizlabs/php_codesniffer": "~2.1.0",
     "jakub-onderka/php-parallel-lint": "~0.8"
   },
 
@@ -42,13 +43,14 @@
     "install-suggest": "Nfreear\\Composer\\Suggest::install",
     "dry-run-suggest": "Nfreear\\Composer\\Suggest::dry_run",
     "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
+    "ABC": "Nfreear\\Composer\\Suggest::dry_run",
 
     "demo": "php -f src/Suggest.php -- ABC",
 
     "test": [
       "#../composer.phar validate --no-interaction",
-      "parallel-lint src",
-      "# phpcs --encoding=utf-8 --standard=PSR2 --report-checkstyle=reports/checkstyle-phpcs.xml --report-full --extensions=php src/*"
+      "#parallel-lint src",
+      "phpcs --encoding=utf-8 --standard=PSR2 --report-checkstyle=reports/checkstyle-phpcs.xml --report-full --extensions=php src/*"
     ]
   }
 }

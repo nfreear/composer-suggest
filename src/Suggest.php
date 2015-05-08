@@ -13,178 +13,185 @@ namespace Nfreear\Composer;
 
 use Composer\Script\CommandEvent;
 
+class Suggest
+{
 
-class Suggest {
+    const ENV = 'NF_COMPOSER_SUGGEST';
 
-  const ENV = 'NF_COMPOSER_SUGGEST';
+    const COMPOSER = 'php ../composer.phar ';
 
-  const COMPOSER = 'php ../composer.phar ';
+    const RE_VERSION = '@^(?<version>[^\s]+) @';
 
-  const RE_VERSION = '@^(?<version>[^\s]+) @';
+    const RE_VEND_PKG = '@(?<vendor>[a-z\d\-]+)\/(?<package>[\w\-]+)@';
 
-  const RE_VEND_PKG = '@(?<vendor>[a-z\d\-]+)\/(?<package>[\w\-]+)@';
-
-  protected static $event;
+    protected static $event;
 
 
-  /** Main install method.
-  */
-  public static function install( CommandEvent $event = null ) {
-    self::$event = $event;
+    /** Main install method.
+    */
+    public static function install(CommandEvent $event = null)
+    {
+        self::$event = $event;
 
-    self::out( __METHOD__ );
+        self::out(__METHOD__);
 
-    $command = self::compose_suggestions_command();
+        $command = self::composeSuggestionsCommand();
 
-    if ($command) {
-      self::debug( 'Command:' );
-      self::debug( $command . PHP_EOL );
+        if ($command) {
+            self::debug('Command:');
+            self::debug($command . PHP_EOL);
 
-      system( $command, $result );
-    } else {
-      self::out( 'No matches, no composer-require triggered.' );
-      $result = 0;
+            system($command, $result);
+        } else {
+            self::out('No matches, no composer-require triggered.');
+            $result = 0;
+        }
+
+        exit($result);
     }
 
-    exit( $result );
-  }
+    /** Dry run method.
+    */
+    public static function dry_run(CommandEvent $event = null)
+    {
+        self::$event = $event;
 
-  /** Dry run method.
-  */
-  public static function dry_run( CommandEvent $event = null ) {
-    self::$event = $event;
+        self::out(__METHOD__);
 
-    self::out( __METHOD__ );
+        $command = self::composeSuggestionsCommand();
 
-    $command = self::compose_suggestions_command();
+        if ($command) {
+            self::debug('Command (dry-run):');
+            self::debug($command . PHP_EOL);
+        } else {
+            self::out('No matches, no composer-require triggered (dry-run).');
+        }
 
-    if ($command) {
-      self::debug( 'Command (dry-run):' );
-      self::debug( $command . PHP_EOL );
-    } else {
-      self::out( 'No matches, no composer-require triggered (dry-run).' );
+        exit(0);
     }
 
-    exit( 0 );
-  }
 
+    // ======================================================
 
-  // ======================================================
+    /** Main worker method.
+    * @return string
+    */
+    protected static function composeSuggestionsCommand()
+    {
 
-  /** Main worker method.
-  * @return string
-  */
-  protected static function compose_suggestions_command() {
+        $regex = self::getArgvEnvPattern();
+        $composer = self::getComposerData();
 
-    $regex = self::get_argv_env_pattern();
-    $composer = self::get_composer_data();
+        self::debug('Pattern (perl-compatible reg exp):    ' . $regex);
 
-    self::debug( 'Pattern (perl-compatible reg exp):  ' . $regex );
+        $suggest_r = self::matchSuggestions($composer->suggest, $regex);
 
-    $suggest_r = self::match_suggestions( $composer->suggest, $regex );
-
-    if ($suggest_r) {
-      $command = self::COMPOSER . 'require ' . implode( ' ', $suggest_r );
-      return $command;
-    }
-  }
-
-  /** Get the `pattern` from command-line or environment.
-  * @return string
-  */
-  protected static function get_argv_env_pattern() {
-    global $argv, $argc;
-
-    $arguments = self::$event ? self::$event->getArguments() : null;
-
-    if ($arguments) {
-      $pattern = $arguments[ count($arguments) - 1 ];
-    }
-    elseif (isset( $argv )) {
-      $pattern = ($argc > 1) ? $argv[ $argc - 1 ] : getenv( self::ENV );
+        if ($suggest_r) {
+            $command = self::COMPOSER . 'require ' . implode(' ', $suggest_r);
+            return $command;
+        }
     }
 
-    if (! $pattern) {
-      var_dump( $argv );
-      self::fatal( 'Insufficient arguments/ no environment variable set; '. self::ENV );
+    /** Get the `pattern` from command-line or environment.
+    * @return string
+    */
+    protected static function getArgvEnvPattern()
+    {
+        global $argv, $argc;
+
+        $arguments = self::$event ? self::$event->getArguments() : null;
+
+        if ($arguments) {
+            $pattern = $arguments[count($arguments) - 1];
+        } elseif (isset($argv)) {
+            $pattern = ($argc > 1) ? $argv[$argc - 1] : getenv(self::ENV);
+        }
+
+        if (!$pattern) {
+            var_dump($argv);
+            self::fatal('Insufficient arguments/ no environment variable set; '. self::ENV);
+        }
+        $regex = '/' . $pattern . '/i';
+
+        return $regex;
     }
-    $regex = '/' . $pattern . '/i';
 
-    return $regex;
-  }
-
-  /** Get object representation of `composer.json`
-  * @return object
-  */
-  protected static function get_composer_data() {
-    $json = file_get_contents( './composer.json' );
-    return (object) json_decode( $json );
-  }
-
-  /** Loop through suggestions, finding matches
-  * @return array Array of matches.
-  */
-  protected static function match_suggestions( $suggestions, $regex ) {
-    $suggest_r = array();
-
-    // http://stackoverflow.com/questions/3535765/capturing-regex-comp--errors
-    try {
-      set_error_handler( 'self::regexErrorHandler' );
-      preg_match( $regex, 'dummy' );
-    } catch (\Exception $ex) {
-      self::fatal( 'Error in pattern. '. $ex->getMessage() );
+    /** Get object representation of `composer.json`
+    * @return object
+    */
+    protected static function getComposerData()
+    {
+        $json = file_get_contents('./composer.json');
+        return (object) json_decode($json);
     }
-    restore_error_handler();
 
-    foreach ( $suggestions as $package => $info ) {
-      if (preg_match( $regex, $info )
-          && preg_match( self::RE_VEND_PKG, $package )
-          && preg_match( self::RE_VERSION, $info, $matches )) {
+    /** Loop through suggestions, finding matches
+    * @return array Array of matches.
+    */
+    protected static function matchSuggestions($suggestions, $regex)
+    {
+        $suggest_r = array();
 
-        $version = rtrim( $matches[ 'version' ], ';, ' );
-        $suggest_r[] = $package . ':' . $version;
-        self::debug( "Match:  '$package' => '$info'" );
-      }
-      else {
-        self::debug( "No match (or error):  '$package' => '$info'" );
-      }
+        // http://stackoverflow.com/questions/3535765/capturing-regex-comp--errors
+        try {
+            set_error_handler('self::regexErrorHandler');
+            preg_match($regex, 'dummy');
+        } catch (\Exception $ex) {
+            self::fatal('Error in pattern. '. $ex->getMessage());
+        }
+        restore_error_handler();
+
+        foreach ($suggestions as $package => $info) {
+            if (preg_match($regex, $info)
+                    && preg_match(self::RE_VEND_PKG, $package)
+                    && preg_match(self::RE_VERSION, $info, $matches)) {
+                $version = rtrim($matches[ 'version' ], ';, ');
+
+                $suggest_r[] = $package . ':' . $version;
+                self::debug("Match:    '$package' => '$info'");
+            } else {
+                self::debug("No match (or error):    '$package' => '$info'");
+            }
+        }
+        return count($suggest_r) > 0 ? $suggest_r : null;
     }
-    return count( $suggest_r ) > 0 ? $suggest_r : null;
-  }
 
-  protected static function regexErrorHandler($errno, $str, $file, $line, $context) {
-    throw new \ErrorException( $str, 0, $errno, $file, $line );
-  }
-
-
-  /** Utilities.
-  */
-
-  protected static function out( $message ) {
-    if (self::$event) {
-      self::$event->getIO()->write("  <info>[suggest]</info> $message");
-    } else {
-      fwrite( STDERR, ' > ' . $message . PHP_EOL );
+    protected static function regexErrorHandler($errno, $str, $file, $line, $context)
+    {
+        throw new \ErrorException($str, 0, $errno, $file, $line);
     }
-  }
 
-  protected static function debug( $message ) {
-    if (!self::$event) {
-      fwrite( STDERR, ' > ' . $message . PHP_EOL );
-    }
-    elseif (self::$event->getIO()->isVerbose()) {
-      self::$event->getIO()->write("  <info>[suggest]</info> $message");
-    }
-  }
 
-  protected static function fatal( $message ) {
-    if (self::$event) {
-      self::$event->getIO()->writeError("  <error>[suggest]</error> $message");
-    } else {
-      fwrite( STDERR, 'ERROR. ' . $message . PHP_EOL );
+    /** Utilities.
+    */
+
+    protected static function out($message)
+    {
+        if (self::$event) {
+            self::$event->getIO()->write("    <info>[suggest]</info> $message");
+        } else {
+            fwrite(STDERR, ' > ' . $message . PHP_EOL);
+        }
     }
-    exit( 1 );
-  }
+
+    protected static function debug($message)
+    {
+        if (!self::$event) {
+            fwrite(STDERR, ' > ' . $message . PHP_EOL);
+        } elseif (self::$event->getIO()->isVerbose()) {
+            self::$event->getIO()->write("    <info>[suggest]</info> $message");
+        }
+    }
+
+    protected static function fatal($message)
+    {
+        if (self::$event) {
+            self::$event->getIO()->writeError("    <error>[suggest]</error> $message");
+        } else {
+            fwrite(STDERR, 'ERROR. ' . $message . PHP_EOL);
+        }
+        exit(1);
+    }
 }
 
 
@@ -192,11 +199,11 @@ class Suggest {
 
 
 call_user_func(function () {
-  global $argv;
+    global $argv;
 
-  if (isset( $argv ) && FALSE !== strpos( __FILE__, $argv[ 0 ])) {
-    Suggest::install();
-  }
+    if (isset($argv) && false !== strpos(__FILE__, $argv[ 0 ])) {
+        Suggest::install();
+    }
 });
 
 
