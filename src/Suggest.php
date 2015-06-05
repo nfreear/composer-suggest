@@ -11,6 +11,8 @@
 
 namespace Nfreear\Composer;
 
+#include_once './vendor/autoload.php';
+
 use Composer\Plugin\PluginInterface;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Composer;
@@ -63,7 +65,7 @@ class Suggest implements PluginInterface, EventSubscriberInterface
     {
         self::debug(__METHOD__);
 
-        var_dump( $event->getArguments() );
+        #var_dump( $event->getArguments() );
     }
 
     /** Main install method.
@@ -109,6 +111,20 @@ class Suggest implements PluginInterface, EventSubscriberInterface
         exit(0);
     }
 
+    public static function dotEnvTemplate()
+    {
+        $env_var = self::ENV;
+        echo <<<EOF
+#
+# File:  .env  (same directory as project's composer.json)
+#
+# Keyword or pattern
+#
+$env_var = "(LACE|another)"
+
+
+EOF;
+    }
 
     // ======================================================
 
@@ -117,6 +133,7 @@ class Suggest implements PluginInterface, EventSubscriberInterface
     */
     protected static function composeSuggestionsCommand()
     {
+        //self::loadDotEnv(); //TODO:
 
         $regex = self::getArgvEnvPattern();
         $composer_data = self::getComposerData();
@@ -133,6 +150,16 @@ class Suggest implements PluginInterface, EventSubscriberInterface
         if ($suggest_r) {
             $command = self::COMPOSER . 'require ' . implode(' ', $suggest_r);
             return $command;
+        }
+    }
+
+    protected static function loadDotEnv()
+    {
+        try {
+            \Dotenv::load('./');
+            self::debug('Loaded .env file');
+        } catch (Exception $ex) {
+            self::debug('Not loaded .env file. '. $ex->getMessage());
         }
     }
 

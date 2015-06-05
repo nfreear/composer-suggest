@@ -23,6 +23,7 @@
   },
   "require": {
     "php": ">=5.3.2",
+    "vlucas/phpdotenv": "^1.1",
     "composer-plugin-api": "1.0.0"
   },
   "require-dev": {
@@ -42,6 +43,7 @@
   "scripts": {
     "install-suggest": "Nfreear\\Composer\\Suggest::install",
     "dry-run-suggest": "Nfreear\\Composer\\Suggest::dry_run",
+    "dot-env-suggest": "Nfreear\\Composer\\Suggest::dotEnvTemplate",
     "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
     "ABC": "Nfreear\\Composer\\Suggest::dry_run",
 
