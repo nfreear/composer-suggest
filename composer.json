@@ -1,7 +1,7 @@
 {
   "name": "nfreear/composer-suggest",
-  "description": "Composer plugin to install suggestions simply, based on keyword patterns. $ vi .env && composer install $ \n(Developed via LACE project)",
-  "keywords": [ "Composer", "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
+  "description": "Composer plugin to install a custom selection of suggested packages, based on keyword patterns. $ vi .env && composer install $",
+  "keywords": [ "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
   "type": "composer-plugin",
   "license": "MIT",
   "minimum-stability": "dev",

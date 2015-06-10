@@ -2,7 +2,7 @@
 
 # composer-suggest
 
-A [Composer plugin][] to install [suggestions][] simply, based on keyword patterns. _([Caution](#caution))_
+A [Composer plugin][] to install a custom selection of [suggested][] packages, based on keyword patterns. _([Caution](#caution))_
 
 
 Example `composer.json`:
@@ -21,16 +21,20 @@ Example `composer.json`:
 
 ## Usage
 
-```bash
-# 1. Set an environment variable containing a pattern/keywords in a .env file
-echo 'NF_COMPOSER_SUGGEST="(EXP|LACE)"' > .myenv
+1. Set an environment variable containing a pattern/keywords in a .env file,
+    ```bash
+    echo 'NF_COMPOSER_SUGGEST="(EXP|LACE)"' > .env
+    ```
 
-# 2. Require the plugin
-composer require nfreear/composer-suggest:dev-master
+2. Require the plugin,
+    ```
+    composer require nfreear/composer-suggest
+    ```
 
-# 3. Install as you would normally
-composer -vvv install
-```
+3. Install as you would normally (verbose),
+    ```
+    composer -vvv install
+    ```
 
 
 ## Legacy
@@ -80,6 +84,7 @@ Use of composer-suggest implies that you probably won't commit `composer.lock` t
 
 Developed for the [LACE Evidence Hub][], part of the [Learning Analytics Community Exchange][] project.
 
+Inspired by and based in part on the [composer-merge-plugin][] – thank you!
 
 ---
 License: [MIT][]
@@ -94,7 +99,7 @@ License: [MIT][]
 [composer-suggest]: https://github.com/nfreear/composer-suggest
 [Composer plugin]: https://getcomposer.org/doc/articles/plugins.md
 [Composer script]: https://getcomposer.org/doc/articles/scripts.md
-[suggestions]: https://getcomposer.org/doc/04-schema.md#suggest
+[suggested]: https://getcomposer.org/doc/04-schema.md#suggest
 [Institute of Educational Technology]: http://iet.open.ac.uk/
 [Learning Analytics Community Exchange]: http://www.laceproject.eu "LACE project"
 [LACE Evidence Hub]: http://evidence.laceproject.eu/
@@ -103,3 +108,4 @@ License: [MIT][]
 [say]: https://blog.engineyard.com/2014/composer-its-all-about-the-lock-file "Engineyard blog"
 [bad]: http://stackoverflow.com/questions/12896780/should-composer-lock-be-committed-to-version-c.. "Stackoverflow"
 [beware]: http://en.wiktionary.org/wiki/caveat_emptor "'User beware'"
+[composer-merge-plugin]: https://github.com/wikimedia/composer-merge-plugin
