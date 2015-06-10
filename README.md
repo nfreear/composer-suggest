@@ -1,9 +1,8 @@
-[![Latest Stable Version][packagist-icon]][packagist]
-[![MIT License][license-icon]][MIT]
+[![Latest Stable Version][packagist-icon]][packagist] [![MIT License][license-icon]][MIT]
 
 # composer-suggest
 
-A [Composer plugin][] to install [suggestions][] simply, based on keyword patterns.
+A [Composer plugin][] to install [suggestions][] simply, based on keyword patterns. _([Caution](#caution))_
 
 
 Example `composer.json`:
@@ -12,9 +11,9 @@ Example `composer.json`:
 {
     "suggest": {
       "a/b": "1.0; This package is for [LACE] only",
-      "c/d": "2.*, This package is for JuxtaLearn and LACE.",
-      "e/f": "3.*, This is just for [JXL].",
-      "g/h": "master; Experiment-A"
+      "c/d": "2.1, This package is for JuxtaLearn and LACE.",
+      "e/f": "3.2, This is just for [JXL].",
+      "g/h": "1.0-beta; Experiment-A"
     }
 }
 ```
@@ -23,10 +22,13 @@ Example `composer.json`:
 ## Usage
 
 ```bash
+# 1. Set an environment variable containing a pattern/keywords in a .env file
 echo 'NF_COMPOSER_SUGGEST="(EXP|LACE)"' > .myenv
 
+# 2. Require the plugin
 composer require nfreear/composer-suggest:dev-master
 
+# 3. Install as you would normally
 composer -vvv install
 ```
 
@@ -39,9 +41,9 @@ In [Composer script][] mode, an example `composer.json` might contain:
 {
     "suggest": {
       "a/b": "1.0; This package is for [LACE] only",
-      "c/d": "2.*, This package is for JuxtaLearn and LACE.",
-      "e/f": "3.*, This is just for [JXL].",
-      "g/h": "master; Experiment-A"
+      "c/d": "2.1, This package is for JuxtaLearn and LACE.",
+      "e/f": "3.2, This is just for [JXL].",
+      "g/h": "1.0-beta; Experiment-A"
     },
 
     "scripts": {
@@ -67,7 +69,14 @@ Legacy advanced usage:
 ```
 
 
-See [composer-suggest][] in use in the [LACE/ OER Research Hub code][ex]-base.
+## Caution
+
+Use of composer-suggest implies that you probably won't commit `composer.lock` to version control. [Various][] people [say][] this is [bad][], and as a general rule they are probably correct.
+
+[Composer-suggest][] works well when all/most of the dependencies in `require` and `suggest` have precise version constraints (`1.2.3`) as opposed to loose ones (`1.*`, `>= 1.5`..). It is also useful during rapid development phases of a project. See it in use in the [LACE/ OER Research Hub code][ex]-base.
+
+[_Caveat utilitor!_][beware]
+
 
 Developed for the [LACE Evidence Hub][], part of the [Learning Analytics Community Exchange][] project.
 
@@ -89,4 +98,8 @@ License: [MIT][]
 [Institute of Educational Technology]: http://iet.open.ac.uk/
 [Learning Analytics Community Exchange]: http://www.laceproject.eu "LACE project"
 [LACE Evidence Hub]: http://evidence.laceproject.eu/
-[ex]: https://github.com/IET-OU/oer-evidence-hub-org/blob/CR40-composer/composer-TEMPLATE.json#L34 "suggest: {..} in composer.json"
+[ex]: https://github.com/IET-OU/oer-evidence-hub-org/blob/9801a671d9b3/composer-TEMPLATE.json#L43-L68 "suggest: {..} in composer.json — LACE/ OER Hub code"
+[Various]: https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file "Composer documentation"
+[say]: https://blog.engineyard.com/2014/composer-its-all-about-the-lock-file "Engineyard blog"
+[bad]: http://stackoverflow.com/questions/12896780/should-composer-lock-be-committed-to-version-c.. "Stackoverflow"
+[beware]: http://en.wiktionary.org/wiki/caveat_emptor "'User beware'"
