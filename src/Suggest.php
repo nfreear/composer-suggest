@@ -1,6 +1,6 @@
 <?php
 /**
- * Composer 'script'. Can we find a simple way of installing Composer suggestions?
+ * Composer plugin. Can we find a simple way of installing Composer suggestions?
  *
  * USAGE:  composer run-script install-suggest "Ju?X(ta)?L"
  *
