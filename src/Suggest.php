@@ -72,11 +72,12 @@ class Suggest implements PluginInterface, EventSubscriberInterface
             return;
         }
 
+        $dups = array();
         $requires = $this->mergeLinks(
             $root->getRequires(),
             $suggest_r,
             $root->getName(),
-            $dups = array()
+            $dups
         );
 
         if (getenv(self::ENV . '_DISABLE')) {
@@ -152,7 +153,7 @@ EOF;
 
         foreach ($merge as $name => $constraint) {
             if (!isset($origin[$name])) {
-                $this->debug("Merging <comment>{$name}</comment>");
+                self::debug("Merging <comment>{$name}</comment>");
                 $origin[$name] = new \Composer\Package\Link(
                     $source,
                     $name,
@@ -160,7 +161,7 @@ EOF;
                 );
             } else {
                 // Defer to solver. TODO: ?
-                $this->debug("Deferring duplicate <comment>{$name}</comment>");
+                self::debug("Deferring duplicate <comment>{$name}</comment>");
                 $dups[] = $link;
             }
         }
@@ -177,7 +178,7 @@ EOF;
         $regex = self::getArgvEnvPattern();
         $composer_data = self::getComposerData();
 
-        self::debug('Pattern (perl-compatible reg exp):  ' . $regex);
+        self::debug("Pattern/regular expression: <comment>$regex</comment>");
 
         if (!isset($composer_data->suggest)) {
             self::out("No 'suggest' section found in './composer.json'");
@@ -206,9 +207,9 @@ EOF;
     {
         try {
             \Dotenv::load('./');
-            self::debug('Loaded .env file');
+            self::debug('Loaded <comment>.env</comment> file');
         } catch (\Exception $ex) {
-            self::debug('Not loaded .env file. '. $ex->getMessage());
+            self::debug('Not loaded <comment>.env</comment> file. '. $ex->getMessage());
         }
     }
 
@@ -269,11 +270,10 @@ EOF;
                     && preg_match(self::RE_VERSION, $info, $matches)) {
                 $version = rtrim($matches[ 'version' ], ';, ');
 
-                #Was: $suggest_r[] = $package . ':' . $version;
                 $suggest_r[ $package ] = $version;
-                self::debug("Match:  '$package' => '$info'");
+                self::debug("Match: <comment>$package => $info</comment>");
             } else {
-                self::debug("No match (or error):  '$package' => '$info'");
+                self::debug("No match: <comment>$package => $info</comment>");
             }
         }
         return count($suggest_r) > 0 ? $suggest_r : null;
