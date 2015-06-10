@@ -55,8 +55,8 @@ class Suggest implements PluginInterface, EventSubscriberInterface
         self::debug(__METHOD__);
 
         return array(
-            ScriptEvents::POST_INSTALL_CMD => 'onInstallOrUpdate',
-            ScriptEvents::POST_UPDATE_CMD  => 'onInstallOrUpdate',
+            ScriptEvents::PRE_INSTALL_CMD => 'onInstallOrUpdate',
+            ScriptEvents::PRE_UPDATE_CMD  => 'onInstallOrUpdate',
         );
     }
 
@@ -65,7 +65,24 @@ class Suggest implements PluginInterface, EventSubscriberInterface
     {
         self::debug(__METHOD__);
 
-        #var_dump( $event->getArguments() );
+        $root = self::$composer->getPackage();
+
+        $suggest_r = self::composeSuggestionsCommand($do_command = false);
+
+        $requires = $this->mergeLinks(
+            $root->getRequires(),
+            $suggest_r,
+            $root->getName(),
+            $dups = array()
+        );
+
+        #var_dump( $requires );
+
+        if (getenv(self::ENV . '_DISABLE')) {
+            self::debug('Disabled (dry run)');
+        } else {
+            $root->setRequires($requires);
+        }
     }
 
     /** Main install method.
@@ -128,12 +145,34 @@ EOF;
 
     // ======================================================
 
+    protected function mergeLinks(array $origin, array $merge, $source, array &$dups)
+    {
+        //$source = 'nfreear/dummy-source-zzzz';
+        $parser = new \Composer\Package\Version\VersionParser();
+
+        foreach ($merge as $name => $constraint) {
+            if (!isset($origin[$name])) {
+                $this->debug("Merging <comment>{$name}</comment>");
+                $origin[$name] = new \Composer\Package\Link(
+                    $source,
+                    $name,
+                    $parser->parseConstraints($constraint)
+                );
+            } else {
+                // Defer to solver. TODO: ?
+                $this->debug("Deferring duplicate <comment>{$name}</comment>");
+                $dups[] = $link;
+            }
+        }
+        return $origin;
+    }
+
     /** Main worker method.
     * @return string
     */
-    protected static function composeSuggestionsCommand()
+    protected static function composeSuggestionsCommand($do_command = true)
     {
-        //self::loadDotEnv(); //TODO:
+        self::loadDotEnv();
 
         $regex = self::getArgvEnvPattern();
         $composer_data = self::getComposerData();
@@ -147,10 +186,20 @@ EOF;
 
         $suggest_r = self::matchSuggestions($composer_data->suggest, $regex);
 
-        if ($suggest_r) {
-            $command = self::COMPOSER . 'require ' . implode(' ', $suggest_r);
+        if ($do_command && $suggest_r) {
+            $command = self::COMPOSER . 'require ' . self::join($suggest_r);
             return $command;
         }
+        return $suggest_r;
+    }
+
+    protected static function join($array, $glue = ':', $sep = ' ')
+    {
+        $result = array();
+        foreach ($array as $key => $val) {
+            $result[] = $key . $glue . $val;
+        }
+        return implode($sep, $result);
     }
 
     protected static function loadDotEnv()
@@ -158,7 +207,7 @@ EOF;
         try {
             \Dotenv::load('./');
             self::debug('Loaded .env file');
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             self::debug('Not loaded .env file. '. $ex->getMessage());
         }
     }
@@ -174,8 +223,10 @@ EOF;
 
         if ($arguments) {
             $pattern = $arguments[count($arguments) - 1];
+        } elseif (getenv(self::ENV)) {
+            $pattern = getenv(self::ENV);
         } elseif (isset($argv)) {
-            $pattern = ($argc > 1) ? $argv[$argc - 1] : getenv(self::ENV);
+            $pattern = ($argc > 1) ? $argv[$argc - 1] : null;
         }
 
         if (!$pattern) {
@@ -218,7 +269,8 @@ EOF;
                     && preg_match(self::RE_VERSION, $info, $matches)) {
                 $version = rtrim($matches[ 'version' ], ';, ');
 
-                $suggest_r[] = $package . ':' . $version;
+                #Was: $suggest_r[] = $package . ':' . $version;
+                $suggest_r[ $package ] = $version;
                 self::debug("Match:  '$package' => '$info'");
             } else {
                 self::debug("No match (or error):  '$package' => '$info'");
@@ -232,7 +284,8 @@ EOF;
         throw new \ErrorException($str, 0, $errno, $file, $line);
     }
 
-    protected static function getIO() {
+    protected static function getIO()
+    {
         if (self::$io) {
             return self::$io;
         }
