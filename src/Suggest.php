@@ -11,8 +11,6 @@
 
 namespace Nfreear\Composer;
 
-#include_once './vendor/autoload.php';
-
 use Composer\Plugin\PluginInterface;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Composer;
@@ -69,14 +67,17 @@ class Suggest implements PluginInterface, EventSubscriberInterface
 
         $suggest_r = self::composeSuggestionsCommand($do_command = false);
 
+        if (!$suggest_r) {
+            self::debug('No matches');
+            return;
+        }
+
         $requires = $this->mergeLinks(
             $root->getRequires(),
             $suggest_r,
             $root->getName(),
             $dups = array()
         );
-
-        #var_dump( $requires );
 
         if (getenv(self::ENV . '_DISABLE')) {
             self::debug('Disabled (dry run)');
@@ -147,7 +148,6 @@ EOF;
 
     protected function mergeLinks(array $origin, array $merge, $source, array &$dups)
     {
-        //$source = 'nfreear/dummy-source-zzzz';
         $parser = new \Composer\Package\Version\VersionParser();
 
         foreach ($merge as $name => $constraint) {
