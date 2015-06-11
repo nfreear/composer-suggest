@@ -2,7 +2,7 @@
 
 # composer-suggest
 
-A [Composer plugin][] to install a custom selection of [suggested][] packages, based on keyword patterns. _([Caution](#caution))_
+A [Composer plugin][] to install a custom group of [suggested][] packages, based on keyword patterns. _([Caution](#caution))_
 
 
 Example `composer.json`:

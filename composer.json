@@ -1,6 +1,6 @@
 {
   "name": "nfreear/composer-suggest",
-  "description": "Composer plugin to install a custom selection of suggested packages, based on keyword patterns. $ vi .env && composer install $",
+  "description": "Composer plugin to install a custom group of suggested packages, based on keyword patterns. $ vi .env && composer install $",
   "keywords": [ "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
   "type": "composer-plugin",
   "license": "MIT",
@@ -24,7 +24,7 @@
   "require": {
     "php": ">=5.3.2",
     "vlucas/phpdotenv": "^1.1",
-    "composer-plugin-api": "1.0.0"
+    "composer-plugin-api": "^1.0"
   },
   "require-dev": {
     "composer/composer": "1.0.*@dev",
