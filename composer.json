@@ -22,7 +22,7 @@
     "source": "http://github.com/nfreear/composer-suggest"
   },
   "require": {
-    "php": ">=5.3.2",
+    "php": ">=5.3.3",
     "vlucas/phpdotenv": "^1.1",
     "composer-plugin-api": "^1.0"
   },
@@ -35,24 +35,20 @@
 
   "suggest": {
     "a/b": "1.0; This package is for [LACE] only",
-    "c/d": "2.*. This package is for JuxtaLearn and LACE.",
-    "e/f": "3.*, This is just for JXL.",
-    "g/h": "master; Experiment-A"
+    "wikimedia/composer-merge-plugin": "Merge one or more additional composer.json files at runtime"
   },
 
   "scripts": {
-    "install-suggest": "Nfreear\\Composer\\Suggest::install",
     "dry-run-suggest": "Nfreear\\Composer\\Suggest::dry_run",
     "dot-env-suggest": "Nfreear\\Composer\\Suggest::dotEnvTemplate",
-    "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
-    "ABC": "Nfreear\\Composer\\Suggest::dry_run",
 
     "demo": "php -f src/Suggest.php -- ABC",
 
     "test": [
-      "#../composer.phar validate --no-interaction",
+      "composer validate --no-interaction",
+      "composer validate --no-interaction --working-dir example",
       "#parallel-lint src",
-      "phpcs --encoding=utf-8 --standard=PSR2 --report-checkstyle=reports/checkstyle-phpcs.xml --report-full --extensions=php src/*"
+      "phpcs --standard=PSR2 --encoding=utf-8 --extensions=php src/*"
     ]
   }
 }

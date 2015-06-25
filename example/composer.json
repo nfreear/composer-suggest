@@ -1,0 +1,26 @@
+{
+  "name": "nfreear/composer-suggest-example",
+  "description": "Example of using the `composer-suggest` plugin.",
+  "license": "MIT",
+
+  "require": {
+    "nfreear/composer-suggest": "^1.0"
+  },
+
+  "suggest": {
+    "a/b": "1.0; This package is for [LACE] only",
+    "c/d": "2.*. This package is for JuxtaLearn and LACE.",
+    "e/f": "3.*, This is just for JXL.",
+    "g/h": "master; Experiment-A"
+  },
+
+  "scripts": {
+    "install-suggest": "Nfreear\\Composer\\Suggest::install",
+    "dry-run-suggest": "Nfreear\\Composer\\Suggest::dry_run",
+    "dot-env-suggest": "Nfreear\\Composer\\Suggest::dotEnvTemplate",
+    "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
+    "ABC": "Nfreear\\Composer\\Suggest::dry_run",
+
+    "demo": "php -f src/Suggest.php -- ABC"
+  }
+}
