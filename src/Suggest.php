@@ -152,18 +152,20 @@ EOF;
         $parser = new \Composer\Package\Version\VersionParser();
 
         foreach ($merge as $name => $constraint) {
-            if (!isset($origin[$name])) {
+            if (isset($origin[ $name ])) {
+                // Defer to solver - no.
+                self::debug("Duplicate name <comment>{$name}</comment>");
+                $dups[ $name ] = $constraint;
+            }
+            // We allow duplicates.
+            //if (!isset($origin[ $name ])) {
                 self::debug("Merging <comment>{$name}</comment>");
                 $origin[$name] = new \Composer\Package\Link(
                     $source,
                     $name,
                     $parser->parseConstraints($constraint)
                 );
-            } else {
-                // Defer to solver. TODO: ?
-                self::debug("Deferring duplicate <comment>{$name}</comment>");
-                $dups[] = $link;
-            }
+            //}
         }
         return $origin;
     }
