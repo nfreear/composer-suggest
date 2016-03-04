@@ -1,4 +1,5 @@
 [![Latest Stable Version][packagist-icon]][packagist] [![MIT License][license-icon]][MIT]
+[![Build status — Travis-CI][travis-icon]][travis]
 
 # composer-suggest
 
@@ -21,7 +22,7 @@ Example `composer.json`:
 
 ## Usage
 
-1. Set an environment variable containing a pattern/keywords in a .env file,
+1. Set an environment variable containing a pattern/keywords in a `.env` file,
     ```bash
     echo 'NF_COMPOSER_SUGGEST="(EXP|LACE)"' > .env
     ```
@@ -51,10 +52,9 @@ In [Composer script][] mode, an example `composer.json` might contain:
     },
 
     "scripts": {
-      "dry-run-suggest": "\\Nfreear\\Composer\\Suggest::dry_run",
+      "dry-run-suggest": "\\Nfreear\\Composer\\Suggest::dryRun",
       "install-suggest": "\\Nfreear\\Composer\\Suggest::install",
-      "install-lace":
-        "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE"
+      "install-lace": "./vendor/bin/suggest --dry LACE"
     }
 }
 ```
@@ -109,3 +109,7 @@ License: [MIT][]
 [bad]: http://stackoverflow.com/questions/12896780/should-composer-lock-be-committed-to-version-c.. "Stackoverflow"
 [beware]: http://en.wiktionary.org/wiki/caveat_emptor "'User beware'"
 [composer-merge-plugin]: https://github.com/wikimedia/composer-merge-plugin
+
+
+[travis]:  https://travis-ci.org/nfreear/composer-suggest
+[travis-icon]: https://api.travis-ci.org/nfreear/composer-suggest.svg "Build status – Travis-CI"

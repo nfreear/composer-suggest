@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+namespace Nfreear\Composer;
+
+/**
+ * CLI script. Can we find a simple way of installing Composer suggestions?
+ *
+ * USAGE:  ./bin/suggest --dry LACE
+ *
+ * @author    Nick Freear, 1 March 2016.
+ * @copyright 2016 The Open University.
+ * @license   MIT
+ */
+
+if (is_file(__DIR__ .'/../vendor/autoload.php') === true) {
+    include_once __DIR__ .'/../vendor/autoload.php';
+} else {
+    include_once __DIR__ .'/../../../autoload.php';
+}
+
+if (is_file(__DIR__ .'/../src/Suggest.php') === true) {
+    include_once __DIR__ .'/../src/Suggest.php';
+} else {
+    include_once 'PHP/src/Suggest.php';
+}
+
+
+if ('--env' === $argv[ 1 ]) {
+    Suggest::dotEnvTemplate();
+}
+elseif ('--dry' === $argv[ 1 ]) {
+    Suggest::dryRun();
+}
+elseif ('--go' === $argv[ 1 ]) {
+    Suggest::install();
+} else {
+    fprintf(STDERR, "Woops! Expecting one of '--dry', '--env' or '--go'\n");
+    exit(1);
+}

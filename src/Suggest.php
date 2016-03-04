@@ -1,4 +1,6 @@
 <?php
+namespace Nfreear\Composer;
+
 /**
  * Composer plugin. Can we find a simple way of installing Composer suggestions?
  *
@@ -8,8 +10,6 @@
  * @copyright 2015 The Open University.
  * @license   MIT
  */
-
-namespace Nfreear\Composer;
 
 use Composer\Plugin\PluginInterface;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -112,7 +112,7 @@ class Suggest implements PluginInterface, EventSubscriberInterface
 
     /** Dry run method.
     */
-    public static function dry_run(CommandEvent $event = null)
+    public static function dryRun(CommandEvent $event = null)
     {
         self::$event = $event;
 
@@ -328,18 +328,5 @@ EOF;
         exit(1);
     }
 }
-
-
-// ======================================================
-
-
-call_user_func(function () {
-    global $argv;
-
-    if (isset($argv) && false !== strpos(__FILE__, $argv[ 0 ])) {
-        Suggest::install();
-    }
-});
-
 
 #End.

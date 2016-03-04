@@ -16,11 +16,11 @@
 
   "scripts": {
     "install-suggest": "Nfreear\\Composer\\Suggest::install",
-    "dry-run-suggest": "Nfreear\\Composer\\Suggest::dry_run",
+    "dry-run-suggest": "Nfreear\\Composer\\Suggest::dryRun",
     "dot-env-suggest": "Nfreear\\Composer\\Suggest::dotEnvTemplate",
-    "install-lace": "php -f vendor/nfreear/composer-suggest/src/Suggest.php -- LACE",
-    "ABC": "Nfreear\\Composer\\Suggest::dry_run",
+    "install-lace": "./vendor/bin/suggest --dry LACE",
+    "ABC": "Nfreear\\Composer\\Suggest::dryRun",
 
-    "demo": "php -f src/Suggest.php -- ABC"
+    "demo": "./vendor/bin/suggest --dry ABC"
   }
 }

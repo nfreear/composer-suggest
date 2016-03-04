@@ -4,7 +4,7 @@
   "keywords": [ "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
   "type": "composer-plugin",
   "license": "MIT",
-  "minimum-stability": "dev",
+  "minimum-stability": "alpha",
   "authors": [
     {
       "name": "Nick Freear (@nfreear)"
@@ -27,19 +27,23 @@
     "composer-plugin-api": "^1.0"
   },
   "require-dev": {
-    "composer/composer": "1.0.*@dev",
-    "phpunit/phpunit": "~4.0",
+    "composer/composer": "^1.0",
     "squizlabs/php_codesniffer": "~2.1.0",
     "jakub-onderka/php-parallel-lint": "~0.8"
   },
 
   "suggest": {
     "a/b": "1.0; This package is for [LACE] only",
-    "wikimedia/composer-merge-plugin": "Merge one or more additional composer.json files at runtime"
+    "phpunit/phpunit": "~4.0",
+    "wikimedia/composer-merge-plugin": "*; Merge one or more additional composer.json files at runtime [LACE]"
   },
 
+  "bin": [
+    "bin/suggest"
+  ],
+
   "scripts": {
-    "dry-run-suggest": "Nfreear\\Composer\\Suggest::dry_run",
+    "dry-run-suggest": "Nfreear\\Composer\\Suggest::dryRun",
     "dot-env-suggest": "Nfreear\\Composer\\Suggest::dotEnvTemplate",
 
     "demo": "php -f src/Suggest.php -- ABC",
@@ -47,7 +51,7 @@
     "test": [
       "composer validate --no-interaction",
       "composer validate --no-interaction --working-dir example",
-      "#parallel-lint src",
+      "./vendor/bin/parallel-lint --exclude vendor .",
       "phpcs --standard=PSR2 --encoding=utf-8 --extensions=php src/*"
     ]
   }
