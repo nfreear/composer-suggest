@@ -24,5 +24,9 @@ script:
 
 after_script:
   - cat .env
+  - make --version
+  - "printf node: && node --version"
+  - "printf npm: && npm --version"
+  - mvn --version
 
 #End.
