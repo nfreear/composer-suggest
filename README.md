@@ -1,9 +1,10 @@
-[![Latest Stable Version][packagist-icon]][packagist] [![MIT License][license-icon]][MIT]
+
 [![Build status — Travis-CI][travis-icon]][travis]
+[![Latest Stable Version][packagist-icon]][packagist] [![MIT License][license-icon]][MIT]
 
 # composer-suggest
 
-A [Composer plugin][] to install a custom group of [suggested][] packages, based on keyword patterns. _([Caution](#caution))_
+A [Composer plugin][] to install a custom group of [suggested][] packages, based on keyword patterns. (_[Caution](#caution)_)
 
 
 Example `composer.json`:
@@ -73,11 +74,20 @@ Legacy advanced usage:
 ```
 
 
+## test
+
+```sh
+composer test
+```
+
+
 ## Caution
 
-Use of composer-suggest implies that you probably won't commit `composer.lock` to version control. [Various][] people [say][] this is [bad][], and as a general rule they are probably correct.
+Use of the `composer-suggest` plugin implies that you probably won't commit `composer.lock` to version control. [Various][] people [say][] this is [bad][], and as a general rule they are probably correct.
 
-[Composer-suggest][] works well when all/most of the dependencies in `require` and `suggest` have precise version constraints (`1.2.3`) as opposed to loose ones (`1.*`, `>= 1.5`..). It is also useful during rapid development phases of a project. See it in use in the [LACE/ OER Research Hub code][ex]-base.
+[Composer-suggest][] works well when all/most of the dependencies in `require` and `suggest`
+have precise version constraints (`1.2.3`) as opposed to loose ones (`1.*`, `>= 1.5`..).
+It is also useful during rapid development phases of a project. See it in use in the [LACE/ OER Research Hub code][ex], and [Open Media Player code][ex-omp]-base.
 
 [_Caveat utilitor!_][beware]
 
@@ -86,10 +96,12 @@ Developed for the [LACE Evidence Hub][], part of the [Learning Analytics Communi
 
 Inspired by and based in part on the [composer-merge-plugin][] – thank you!
 
+
 ---
 License: [MIT][]
 
-© 2015 The Open University. ([Institute of Educational Technology][])
+© 2016 The Open University. ([Institute of Educational Technology][])
+
 
 [packagist]: https://packagist.org/packages/nfreear/composer-suggest
 [packagist-icon]: https://img.shields.io/packagist/v/nfreear/composer-suggest.svg?style=flat
@@ -103,13 +115,17 @@ License: [MIT][]
 [Institute of Educational Technology]: http://iet.open.ac.uk/
 [Learning Analytics Community Exchange]: http://www.laceproject.eu "LACE project"
 [LACE Evidence Hub]: http://evidence.laceproject.eu/
-[ex]: https://github.com/IET-OU/oer-evidence-hub-org/blob/9801a671d9b3/composer-TEMPLATE.json#L43-L68 "suggest: {..} in composer.json — LACE/ OER Hub code"
-[Various]: https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file "Composer documentation"
+[ex]: https://github.com/IET-OU/oer-evidence-hub-org/blob/9801a671d9b3/composer-TEMPLATE.json#L43-L68
+    "suggest: {..} in composer.json — LACE/ OER Hub code"
+[ex-omp]: https://github.com/IET-OU/open-media-player/blob/2.x/composer.json#L33-L37
+    "suggest: {..} in composer.json — Open Media Player"
+[Various]: https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file
+    "Composer documentation"
 [say]: https://blog.engineyard.com/2014/composer-its-all-about-the-lock-file "Engineyard blog"
-[bad]: http://stackoverflow.com/questions/12896780/should-composer-lock-be-committed-to-version-c.. "Stackoverflow"
+[bad]: http://stackoverflow.com/questions/12896780/should-composer-lock-be-committed-to-version-c..
+    "Stackoverflow"
 [beware]: http://en.wiktionary.org/wiki/caveat_emptor "'User beware'"
 [composer-merge-plugin]: https://github.com/wikimedia/composer-merge-plugin
-
 
 [travis]:  https://travis-ci.org/nfreear/composer-suggest
 [travis-icon]: https://api.travis-ci.org/nfreear/composer-suggest.svg "Build status – Travis-CI"
