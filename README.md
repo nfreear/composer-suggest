@@ -74,7 +74,7 @@ Legacy advanced usage:
 ```
 
 
-## test
+## Test
 
 ```sh
 composer test

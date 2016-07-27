@@ -25,6 +25,10 @@ if (is_file(__DIR__ .'/../src/Suggest.php') === true) {
 }
 
 
+if ($argc < 2) {
+    fprintf(STDERR, "Insufficient arguments. Expecting one of '--dry', '--env' or '--go'\n");
+    exit(1);
+}
 if ('--env' === $argv[ 1 ]) {
     Suggest::dotEnvTemplate();
 }

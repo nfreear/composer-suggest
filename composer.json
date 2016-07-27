@@ -1,6 +1,6 @@
 {
   "name": "nfreear/composer-suggest",
-  "description": "Composer plugin to install a custom group of suggested packages, based on keyword patterns. $ vi .env && composer install $",
+  "description": "Composer plugin to install a custom group of suggested packages, based on keyword patterns. ' vi .env && composer install '",
   "keywords": [ "suggest", "pattern", "regex", "LACE", "OpenUniversity", "IET-OU" ],
   "type": "composer-plugin",
   "license": "MIT",
