@@ -208,11 +208,13 @@ EOF;
     protected static function loadDotEnv()
     {
         try {
-            \Dotenv::load('./');
+            $dotenv = new \Dotenv\Dotenv('./');
+            $dotenv->load();
             self::debug('Loaded <comment>.env</comment> file');
         } catch (\Exception $ex) {
             self::debug('Not loaded <comment>.env</comment> file. '. $ex->getMessage());
         }
+        return $dotenv;
     }
 
     /** Get the `pattern` from command-line or environment.
