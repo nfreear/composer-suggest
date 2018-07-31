@@ -238,7 +238,8 @@ EOF;
             var_dump($argv);
             self::fatal('Insufficient arguments/ no environment variable set; '. self::ENV);
         }
-        $regex = '/' . $pattern . '/i';
+        // Ensure slashes are correctly escaped.
+        $regex = '/' . str_replace('/', '\/', $pattern) . '/i';
 
         return $regex;
     }
@@ -264,6 +265,7 @@ EOF;
             set_error_handler('self::regexErrorHandler');
             preg_match($regex, 'dummy');
         } catch (\Exception $ex) {
+            var_dump( $suggestions, $regex );
             self::fatal('Error in pattern. '. $ex->getMessage());
         }
         restore_error_handler();
